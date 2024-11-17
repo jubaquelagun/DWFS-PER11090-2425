@@ -32,7 +32,7 @@ function findSeatsInMatrix(matrix, numSeats) {
     }
 
     for (let i = matrix.length - 1; i >= 0; i--) {
-        findSeatsInaRow(matrix[i], numSeats,10,result);
+        findSeatsInaRow(matrix[i], numSeats,matrix[i].length,result);
         if (result.size > 0) {
             i=0;
         }
@@ -42,12 +42,14 @@ function findSeatsInMatrix(matrix, numSeats) {
 }
 
 //recorre cada asiendo de una fila y si encuentra un asiento libre, busca los siguientes asientos consecutivos
-function findSeatsInaRow(row, numSeats, seatNumber, ids) {
+function findSeatsInaRow(row, numSeats, seatsPerRow, ids) {
     let consecutiveSeats = 0;
-    for (let i = seatNumber - 1; i >= 0; i--) {
+
+    for (let i = seatsPerRow - 1; i >= 0; i--) {
         if (!row[i].estado) {
             consecutiveSeats++;
             ids.add(row[i].id);
+            //marca los asientos consecutivos como ocupados
             if (consecutiveSeats === numSeats) {
                 for (let j = i; j < i + numSeats; j++) {
                     row[j].estado = true;
@@ -59,13 +61,17 @@ function findSeatsInaRow(row, numSeats, seatNumber, ids) {
             ids.clear();
         }
     }
+    //si no se encontraron suficientes asientos consecutivos, se limpia el set
+    if (consecutiveSeats < numSeats) {
+        ids.clear();
+    }
 }
 
 
 // Inicializar la matriz
 let sillas = setup();
 
-let sillasLibres= findSeatsInMatrix(sillas,10);
+let sillasLibres= findSeatsInMatrix(sillas,5);
 console.log(sillasLibres);
 
 sillasLibres= findSeatsInMatrix(sillas,10);
